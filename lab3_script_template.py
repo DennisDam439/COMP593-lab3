@@ -1,3 +1,8 @@
+import pandas as pd
+import os 
+import sys
+from datetime import datetime
+
 
 def main():
     sales_csv = get_sales_csv()
