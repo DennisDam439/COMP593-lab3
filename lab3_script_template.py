@@ -43,7 +43,7 @@ worksheet = writer.sheets['Order']
 # Format the prices
 money_fmt = workbook.add_format({'num_format': '$#,##0.00'})
 
-## Setting column widths
+    ## Setting column widths
 worksheet.set_column('A:A', 10)
 worksheet.set_column('B:B', 12)
 worksheet.set_column('C:C', 15)
@@ -51,7 +51,7 @@ worksheet.set_column('D:D', 12)
 worksheet.set_column('E:E', 10)
 worksheet.set_column('F:F', 15, money_fmt)
 
-# Write the grand total
+# Writing  the grand total
 worksheet.write(len(order_data) + 1, 4, 'Grand Total')
 worksheet.write(len(order_data) + 1, 5, grand_total, money_fmt)
 
