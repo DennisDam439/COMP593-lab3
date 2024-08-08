@@ -3,41 +3,58 @@ import os
 import sys
 from datetime import datetime
 
+# the command line argument 
+if len(sys.argv) != 2:
+        print("Usage: python script.py <C:\Users\dend\OneDrive\Documents\Github\COMP593-LAB3\salesdataS.py>")
+sys.exit(1)
 
-def main():
-    sales_csv = get_sales_csv()
-    orders_dir = create_orders_dir(sales_csv)
-    process_sales_data(sales_csv, orders_dir)
+csv_file_path = sys.argv[1]
+if not os.path.isfile(csv_file_path):
+    print(f"C:\Users\Alenmd\OneDrive\Documents\Github\COMP593-LAB3\salesdataS.py: The file {csv_file_path} does not exist.")
+sys.exit(1)
 
-# Get path of sales data CSV file from the command line
-def get_sales_csv():
-    # Check whether command line parameter provided
-    # Check whether provide parameter is valid path of file
-    return
 
-# Create the directory to hold the individual order Excel sheets
-def create_orders_dir(sales_csv):
-    # Get directory in which sales data CSV file resides
-    # Determine the name and path of the directory to hold the order data files
-    # Create the order directory if it does not already exist
-    return 
+    ## Reading the CSV file 
+sales_data = pd.read_csv(csv_file_path)
 
-# Split the sales data into individual orders and save to Excel sheets
-def process_sales_data(sales_csv, orders_dir):
-    # Import the sales data from the CSV file into a DataFrame
-    # Insert a new "TOTAL PRICE" column into the DataFrame
-    # Remove columns from the DataFrame that are not needed
-    # Group the rows in the DataFrame by order ID
-    # For each order ID:
-        # Remove the "ORDER ID" column
-        # Sort the items by item number
-        # Append a "GRAND TOTAL" row
-        # Determine the file name and full path of the Excel sheet
-        # Export the data to an Excel sheet
-        # Format the Excel sheet (
-        # Define format for the money columns
-        # Format each colunm
-        # close the sheet
+    # Create Orders directory
+today_date = datetime.now().strftime("%Y-%m-%d")
+orders_dir = os.path.join(os.path.dirname(csv_file_path), f"Orders_{today_date}")
+if not os.path.exists(orders_dir):
+    os.makedirs(orders_dir)
+
+    # Process each order
+for order_id, order_data in sales_data.groupby('ORDER ID'):
+        order_data = order_data.sort_values(by='ITEM NUMBER')
+        order_data['TOTAL PRICE'] = order_data['ITEM QUANTITY'] * order_data['ITEM PRICE']
+
+    # Calculate grand total
+grand_total = order_data['TOTAL PRICE'].sum()
+
+    # Save to Excel file
+excel_file_path = os.path.join(orders_dir, f"Order_{order_id}.xlsx")
+with pd.ExcelWriter(excel_file_path, engine='xlsxwriter') as writer:
+        order_data.to_excel(writer, index=False, sheet_name='Order')
+
+    # Get workbook and worksheet objects
+workbook = writer.book
+worksheet = writer.sheets['Order']
+
+# Format the prices
+money_fmt = workbook.add_format({'num_format': '$#,##0.00'})
+
+## Setting column widths
+worksheet.set_column('A:A', 10)
+worksheet.set_column('B:B', 12)
+worksheet.set_column('C:C', 15)
+worksheet.set_column('D:D', 12)
+worksheet.set_column('E:E', 10)
+worksheet.set_column('F:F', 15, money_fmt)
+
+# Write the grand total
+worksheet.write(len(order_data) + 1, 4, 'Grand Total')
+worksheet.write(len(order_data) + 1, 5, grand_total, money_fmt)
+
 
 if __name__ == '__main__':
-    main()
+        main()
