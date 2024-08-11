@@ -9,11 +9,14 @@ Parameters:
   sales_csv_path = Full path of the sales data CSV file
 """
 import pandas as pd
+import os.path
+from datetime import date
+import re 
 
 def main():
     sales_csv_path = get_sales_csv_path()
     orders_dir_path = create_orders_dir(sales_csv_path)
-    process_sales_data(sales_csv_path, orders_dir_path)
+    process_sales_data(sales_csv_path, orders_dir_path) #### tpye ignore 
 
 def get_sales_csv_path():
     """Gets the path of sales data CSV file from the command line
@@ -22,6 +25,7 @@ def get_sales_csv_path():
         str: Path of sales data CSV file
     """
     # TODO: Check whether command line parameter provided
+    num_params = len(sys.argv)-1
     # TODO: Check whether provide parameter is valid path of file
     # TODO: Return path of sales data CSV file
     return 
