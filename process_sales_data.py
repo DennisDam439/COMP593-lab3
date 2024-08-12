@@ -12,18 +12,26 @@ import pandas as pd
 import os.path
 from datetime import date
 import re 
+import sys
 
 def main():
     sales_csv_path = get_sales_csv_path()
     orders_dir_path = create_orders_dir(sales_csv_path)
     process_sales_data(sales_csv_path, orders_dir_path) #### tpye ignore 
+if len(sys.argv) !=2:
+    print("Usage:python.py <C:\Users\dddam\OneDrive\Desktop\githubrepo\COMP593-Lab-3.py")
+    sys.exit(1)
+    
+#Read CSV##
+
 
 def get_sales_csv_path():
     """Gets the path of sales data CSV file from the command line
-
     Returns:
         str: Path of sales data CSV file
     """
+    get_sales=pd.read_csv(csv_file_path)
+
     # TODO: Check whether command line parameter provided
     num_params = len(sys.argv)-1
     # TODO: Check whether provide parameter is valid path of file
